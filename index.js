@@ -1,6 +1,12 @@
 const sqlite3 = require('sqlite3').verbose();
 const fastify = require('fastify')();
+const path = require('path');
 const database = './db/sample.db';
+
+fastify.register(require('fastify-static'), {
+  root: path.join(__dirname, 'public'),
+  prefix: '/public/' // optional: default '/'
+});
 
 const createDb = () => {
   let db = new sqlite3.Database(database);
@@ -61,7 +67,11 @@ fastify.get('/list', async (request, reply) => {
   return JSON.stringify(await selectClients());
 });
 
-fastify.listen(3000, '127.0.0.1', function(err) {
+fastify.get('/index.html', function(req, reply) {
+  reply.sendFile('index.html');
+});
+
+fastify.listen(3000, 'https://nodejssqlite.herokuapp.com', function(err) {
   if (err) throw err;
   console.log(`server listening on ${fastify.server.address().port}`);
 });

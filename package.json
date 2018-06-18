@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "fastify": "^1.6.0",
+    "fastify-static": "^0.12.0",
     "sqlite3": "^4.0.0"
   },
   "engines": {
