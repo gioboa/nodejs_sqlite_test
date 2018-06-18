@@ -1,0 +1,22 @@
+{
+  "name": "nodejssqlite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "prestart": "npm i",
+
+
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^1.6.0",
+    "sqlite3": "^4.0.0"
+  },
+  "engines": {
+    "node": "9.5.0",
+    "npm": "5.6.0"
+  }
+}
