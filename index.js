@@ -31,6 +31,16 @@ const insertData = request => {
   db.close();
 };
 
+const clearData = request => {
+  let db = new sqlite3.Database(database);
+  db.run(`DELETE FROM clients`, err => {
+    if (err) {
+      return console.error(err.message);
+    }
+  });
+  db.close();
+};
+
 const selectClients = async () => {
   return new Promise((resolve, reject) => {
     let db = new sqlite3.Database(database);
@@ -58,6 +68,11 @@ const selectClients = async () => {
 
 app.post('/create', (req, res) => {
   createDb();
+  res.send(JSON.parse('{"result": "ok"}'));
+});
+
+app.post('/clear', (req, res) => {
+  clearData();
   res.send(JSON.parse('{"result": "ok"}'));
 });
 
