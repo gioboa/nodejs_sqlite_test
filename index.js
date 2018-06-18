@@ -1,11 +1,17 @@
+const express = require('express');
+const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
-const fastify = require('fastify')();
-const path = require('path');
 const database = './db/sample.db';
 
-fastify.register(require('fastify-static'), {
-  root: path.join(__dirname, 'public'),
-  prefix: '/public/' // optional: default '/'
+let app = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(express.static('static'));
+
+app.get('/status', function(req, res) {
+  res.send('Server Running!');
 });
 
 const createDb = () => {
@@ -50,28 +56,20 @@ const selectClients = async () => {
   });
 };
 
-fastify.post('/create', async (request, reply) => {
-  reply.type('application/json').code(200);
+app.post('/create', (req, res) => {
   createDb();
-  return { result: 'OK' };
+  res.send(JSON.parse('{"result": "ok"}'));
 });
 
-fastify.post('/list', async (request, reply) => {
-  reply.type('application/json').code(200);
-  insertData(request);
-  return { result: 'OK' };
+app.post('/list', (req, res) => {
+  insertData(req);
+  res.send(JSON.parse('{"result": "ok"}'));
 });
 
-fastify.get('/list', async (request, reply) => {
-  reply.type('application/json').code(200);
-  return JSON.stringify(await selectClients());
+app.get('/list', async (req, res) => {
+  const data = await selectClients();
+  res.send(data);
 });
 
-fastify.get('/index.html', function(req, reply) {
-  reply.sendFile('index.html');
-});
-
-fastify.listen(3000, 'https://nodejssqlite.herokuapp.com', function(err) {
-  if (err) throw err;
-  console.log(`server listening on ${fastify.server.address().port}`);
-});
+app.use(express.static(__dirname + '/dist'));
+app.listen(process.env.PORT || 8080);
