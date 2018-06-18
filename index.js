@@ -21,6 +21,7 @@ const createDb = () => {
 };
 
 const insertData = request => {
+  console.log(`insertData ${request.body.surname}`);
   let db = new sqlite3.Database(database);
   let sql = `INSERT INTO clients (name, surname) VALUES ("${request.body.name}","${request.body.surname}")`;
   db.run(sql, err => {
