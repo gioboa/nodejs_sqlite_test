@@ -72,7 +72,7 @@ app.post('/create', (req, res) => {
   res.send(JSON.parse('{"result": "ok"}'));
 });
 
-app.post('/clear', (req, res) => {
+app.get('/clear', (req, res) => {
   clearData();
   res.send(JSON.parse('{"result": "ok"}'));
 });
