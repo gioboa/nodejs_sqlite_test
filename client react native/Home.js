@@ -5,18 +5,16 @@ import { addClient, clearClientList, getClients } from './reducer';
 
 class Home extends Component {
   componentDidMount() {
-    this.props.getClients();
+    setInterval(() => this.props.getClients(), 2000);
   }
   addClient() {
     this.props.addClient({ name: 'Test', surname: new Date().toLocaleString('en-US') });
-    this.props.getClients();
   }
   render() {
     const { clients } = this.props;
     return (
       <View style={styles.container}>
         <Button onPress={() => this.addClient()} title="Add client" />
-        <Button onPress={() => this.props.getClients()} title="Refresh" />
         {clients.map((client, index) => (
           <Text key={index}>
             {index} - {client.name} - {client.surname}

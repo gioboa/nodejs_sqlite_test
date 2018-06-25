@@ -1,9 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
-const database = './db/sample.db';
-
-let app = express();
+const db = new sqlite3.Database('./sample.db');
+const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -15,36 +14,29 @@ app.get('/status', function(req, res) {
 });
 
 const createDb = () => {
-  let db = new sqlite3.Database(database);
   db.run('CREATE TABLE clients(id INTEGER PRIMARY KEY AUTOINCREMENT, name text, surname text)');
-  db.close();
 };
 
 const insertData = request => {
-  console.log(`insertData ${request.body.surname}`);
-  let db = new sqlite3.Database(database);
+  // console.log(`insertData ${request.body.surname}`);
   let sql = `INSERT INTO clients (name, surname) VALUES ("${request.body.name}","${request.body.surname}")`;
   db.run(sql, err => {
     if (err) {
       return console.error(err.message);
     }
   });
-  db.close();
 };
 
 const clearData = request => {
-  let db = new sqlite3.Database(database);
   db.run(`DELETE FROM clients`, err => {
     if (err) {
       return console.error(err.message);
     }
   });
-  db.close();
 };
 
 const selectClients = async () => {
   return new Promise((resolve, reject) => {
-    let db = new sqlite3.Database(database);
     let sql = `SELECT name, surname FROM clients`;
     var clients = [];
     db.each(
@@ -89,3 +81,9 @@ app.get('/list', async (req, res) => {
 
 app.use(express.static(__dirname + '/dist'));
 app.listen(process.env.PORT || 8080);
+
+process.on('SIGINT', () => process.exit(2));
+process.on('exit', () => {
+  db.close();
+  console.log('bye');
+});
